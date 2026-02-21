@@ -1,0 +1,88 @@
+<?php
+function generateKey($length = 16) {
+    $chars = 'IkyWXYZ0123456789';
+    $key = 'IKYCRACKER-';
+    for ($i = 0; $i < $length; $i++) {
+        $key .= $chars[rand(0, strlen($chars) - 1)];
+    }
+    return $key;
+}
+
+$key = "";
+$expired = "";
+
+if (isset($_POST['create'])) {
+    $days = intval($_POST['days']);
+    if ($days <= 0) $days = 1;
+
+    $key = generateKey();
+    $expired = date("d-m-Y H:i:s", strtotime("+$days days"));
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>IKYCRACKER KEY GENERATOR</title>
+<style>
+body {
+    background: #0f0f0f;
+    font-family: monospace;
+    color: #00ff00;
+    text-align: center;
+    padding-top: 80px;
+}
+.box {
+    background: #111;
+    border: 1px solid #00ff00;
+    padding: 30px;
+    width: 400px;
+    margin: auto;
+    box-shadow: 0 0 20px #00ff00;
+    border-radius: 10px;
+}
+input, button {
+    padding: 10px;
+    margin: 10px;
+    background: black;
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    border-radius: 5px;
+}
+button:hover {
+    background: #00ff00;
+    color: black;
+    cursor: pointer;
+}
+.key {
+    margin-top: 20px;
+    font-size: 18px;
+    color: cyan;
+}
+.expired {
+    color: orange;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+    <h2>🔐 IKYCRACKER KEY GENERATOR</h2>
+    
+    <form method="POST">
+        <label>Masa Aktif (Hari):</label><br>
+        <input type="number" name="days" placeholder="Contoh: 1" required>
+        <br>
+        <button type="submit" name="create">CREATE KEY</button>
+    </form>
+
+    <?php if($key): ?>
+        <div class="key">
+            <p><b>KEY:</b><br><?php echo $key; ?></p>
+            <p class="expired"><b>Expired:</b> <?php echo $expired; ?></p>
+        </div>
+    <?php endif; ?>
+</div>
+
+</body>
+</html>
