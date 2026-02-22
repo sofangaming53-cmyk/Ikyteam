@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>IKY PANEL KEY</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(270deg,#0f0f1a,#1a1a40,#0f0f1a);
+  background-size: 600% 600%;
+  animation: animeBG 15s ease infinite;
+  color: white;
+  text-align: center;
+}
+@keyframes animeBG {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+.container {
+  background: rgba(0,0,0,0.75);
+  margin: 30px auto;
+  padding: 20px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 420px;
+  box-shadow: 0 0 25px cyan;
+}
+h2 { color: cyan; text-shadow: 0 0 10px cyan; }
+select, button {
+  width: 100%; padding: 10px; margin: 6px 0;
+  border-radius: 8px; border: none;
+}
+button {
+  background: cyan; color: black; font-weight: bold; cursor: pointer;
+}
+button:hover { background: white; transform: scale(1.05); }
+.keyBox {
+  margin-top: 15px; padding: 10px; background: #111;
+  border-radius: 10px; animation: glow 1.5s infinite alternate;
+}
+@keyframes glow {
+  from { box-shadow: 0 0 10px cyan; }
+  to { box-shadow: 0 0 25px magenta; }
+}
+.saldoBox {
+  margin: 10px 0; padding: 10px; background: #111;
+  border-radius: 10px; box-shadow: 0 0 15px gold; font-weight: bold;
+}
+.wallet-icons img { width: 35px; margin: 0 5px; vertical-align: middle; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>✨ IKY PANEL KEY ✨</h2>
+
+  <div class="saldoBox">
+    💰 Saldo E-Wallet: <span id="saldo">999999999</span>
+    <div class="wallet-icons">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/2/2e/BRI_2020.svg">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg">
+    </div>
+  </div>
+
+  <label>Pilih Aplikasi</label>
+  <select id="app">
+    <option>STRICK BR</option>
+    <option>HEXBLADE</option>
+    <option>XTFFH4X</option>
+    <option>ELEVEN</option>
+    <option>BR MODS V5</option>
+    <option>SPOTIFY</option>
+    <option>BEYOND CHEATS</option>
+    <option>XITHAX PUBG</option>
+    <option>EAGLE</option>
+    <option>LKTEAM</option>
+    <option>MATRIX</option>
+    <option>EVO CHEATS</option>
+  </select>
+
+  <label>Pilih Paket</label>
+  <select id="durasi">
+    <option value="1">1 Day — 10k</option>
+    <option value="3">3 Day — 30k</option>
+    <option value="5">5 Day — 40k</option>
+    <option value="7">7 Day — 50k</option>
+    <option value="10">10 Day — 60k</option>
+    <option value="15">15 Day — 70k</option>
+    <option value="30">30 Day — 100k</option>
+  </select>
+
+  <label>Maksimum Device</label>
+  <select id="device">
+    <option value="1">1 Device</option>
+    <option value="2">2 Device</option>
+    <option value="3">3 Device</option>
+    <option value="5">5 Device</option>
+    <option value="10">10 Device</option>
+  </select>
+
+  <button onclick="createKey()">Create Key</button>
+  <button onclick="copyKey()">Copy Key</button>
+  <button onclick="deleteKey()">Delete Key</button>
+
+  <div class="keyBox" id="output">Key akan muncul di sini</div>
+</div>
+
+<script>
+let saldo = 999999999;
+let usedKeys = new Set();
+let currentKey = null;
+
+const harga = {
+  "1": 10000, "3": 30000, "5": 40000,
+  "7": 50000, "10": 60000, "15": 70000, "30": 100000
+};
+
+function generateUniqueKey() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let key;
+  do {
+    let randomPart = "";
+    for (let i = 0; i < 8; i++) {
+      randomPart += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    const timePart = Date.now().toString(36).toUpperCase().slice(-2);
+    key = "IKY-" + randomPart + timePart;
+  } while (usedKeys.has(key));
+  usedKeys.add(key);
+  return key;
+}
+
+function createKey() {
+  let app = document.getElementById("app").value;
+  let durasi = document.getElementById("durasi").value;
+  let device = document.getElementById("device").value;
+  let price = harga[durasi];
+
+  if (saldo < price) {
+    alert("Saldo tidak cukup!");
+    return;
+  }
+
+  saldo -= price;
+  document.getElementById("saldo").innerText = saldo;
+
+  currentKey = generateUniqueKey();
+
+  let exp = new Date();
+  exp.setDate(exp.getDate() + parseInt(durasi));
+
+  document.getElementById("output").innerHTML =
+    "🔑 Key: <b>" + currentKey + "</b><br>" +
+    "📱 App: " + app + "<br>" +
+    "📆 Expired: " + exp.toLocaleDateString() + "<br>" +
+    "📱 Max Device: " + device + "<br>" +
+    "💸 Harga: " + price;
+}
+
+function copyKey() {
+  if (!currentKey) return alert("Tidak ada key!");
+  navigator.clipboard.writeText(currentKey);
+  alert("Key berhasil disalin!");
+}
+
+function deleteKey() {
+  if (!currentKey) return alert("Tidak ada key!");
+  usedKeys.delete(currentKey);
+  currentKey = null;
+  document.getElementById("output").innerHTML = "❌ Key dihapus!";
+}
+</script>
+
+</body>
+</html>
